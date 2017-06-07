@@ -1,0 +1,57 @@
+<?php include_once("header.phtml") ?>
+<div class="login-form">
+			<div class="top-login">
+				<span><img src="statics/images/group.png" alt=""/></span>
+			</div>
+			<h1>Login</h1>
+			<div class="login-top">
+			<form id="form-data" method="post" action="#">
+				<div class="login-ic">
+					<i ></i>
+					<input type="text" id="username" value=""/>
+					<div class="clear"> </div>
+				</div>
+				<div class="login-ic">
+					<i class="icon"></i>
+					<input type="password" id="password" value="" />
+					<div class="clear"> </div>
+				</div>
+			
+				<div class="log-bwn">
+					<input type="submit"  value="Login" id="login">
+				</div>
+				</form>
+			</div>
+			<p class="copy">© 2016 聊天登录</p>
+</div>		
+<?php include_once("footer.phtml");?>
+<script>
+ $(function(){
+     var websocket = new WebSocket("ws://192.168.186.128:9502");
+     websocket.onopen = function(evt){
+         console.log("Connected to WebSocket server.");
+     }
+     $("#login").click(function(){
+         var username = $("#username").val();
+         var password = $("#password").val();
+         var data = {
+             type : 'login',
+             username : username,
+             password  : password
+         };
+         websocket.send(JSON.stringify(data));
+        return false;
+     });
+
+      websocket.onmessage = function (evt) {
+         var data = JSON.parse(evt.data);
+         console.log('Retrieved data from server: ' + evt.data);
+         console.log(data);
+         alert(data.username+':'+data.msg)
+     }
+     websocket.onclose = function(evt){
+         console.log('Client notified socket has closed');
+     }
+
+ })
+</script>
